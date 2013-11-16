@@ -55,7 +55,10 @@ int main(void)
 {
   bool LEDSwitchedOff = FALSE;
   RCC_GetClocksFreq(&RCC_Clocks);
+
+  /* Set the SysTick to interrupt at 100 ms intervals */
   SysTick_Config(RCC_Clocks.HCLK_Frequency / 100);
+
 
   Set_System();
   Set_USBClock();

@@ -31,17 +31,31 @@
 #define __HW_CONFIG_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "platform_config.h"
+#include "stm32f30x.h"
+#include "stm32f30x_conf.h"
+#include "stm32f3_discovery.h"
+
 #include "usb_type.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+
+/*Unique Devices IDs register set*/
+#if defined(STM32F30X)
+    #define         ID1          (0x1FFFF7AC)
+    #define         ID2          (0x1FFFF7B0)
+    #define         ID3          (0x1FFFF7B4)
+#endif
+
+#if defined (STM32F30X)
+  #define USB_DISCONNECT                      GPIOE
+  #define USB_DISCONNECT_PIN                  GPIO_Pin_14
+
+  #define RCC_AHBPeriph_GPIO_DISCONNECT       RCC_AHBPeriph_GPIOE
+#endif /* USE_STM3210B_EVAL */
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
-#define MASS_MEMORY_START     0x04002000
-#define BULK_MAX_PACKET_SIZE  0x00000040
-#define LED_ON                0xF0
-#define LED_OFF               0xFF
 
 /* Exported functions ------------------------------------------------------- */
 void Set_System(void);
@@ -51,7 +65,7 @@ void Leave_LowPowerMode(void);
 void USB_Interrupts_Config(void);
 void USB_Cable_Config (FunctionalState NewState);
 void Get_SerialNum(void);
-void LCD_Control(void);
+
 uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length);
 uint32_t CDC_Receive_DATA(void);
 /* External variables --------------------------------------------------------*/

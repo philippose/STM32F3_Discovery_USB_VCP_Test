@@ -34,10 +34,10 @@
   ******************************************************************************
   */
 
-  .syntax unified
-	.cpu cortex-m4
-	.fpu softvfp
-	.thumb
+.syntax unified
+.cpu cortex-m4
+.fpu softvfp
+.thumb
 
 .global	g_pfnVectors
 .global	Default_Handler
@@ -55,6 +55,8 @@ defined in linker script */
 .word	_ebss
 
 .equ  BootRAM,        0xF1E0F85F
+
+
 /**
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
@@ -63,10 +65,9 @@ defined in linker script */
  * @param  None
  * @retval : None
 */
-
-    .section	.text.Reset_Handler
-	.weak	Reset_Handler
-	.type	Reset_Handler, %function
+.section	.text.Reset_Handler
+.weak	Reset_Handler
+.type	Reset_Handler, %function
 Reset_Handler:
 
 /* Copy the data segment initializers from flash to SRAM */
@@ -109,6 +110,7 @@ LoopForever:
     
 .size	Reset_Handler, .-Reset_Handler
 
+
 /**
  * @brief  This is the code that gets called when the processor receives an
  *         unexpected interrupt.  This simply enters an infinite loop, preserving
@@ -117,11 +119,13 @@ LoopForever:
  * @param  None
  * @retval : None
 */
-    .section	.text.Default_Handler,"ax",%progbits
+.section	.text.Default_Handler,"ax",%progbits
 Default_Handler:
 Infinite_Loop:
 	b	Infinite_Loop
-	.size	Default_Handler, .-Default_Handler
+.size	Default_Handler, .-Default_Handler
+
+
 /******************************************************************************
 *
 * The minimal vector table for a Cortex-M4.  Note that the proper constructs
@@ -129,13 +133,12 @@ Infinite_Loop:
 * 0x0000.0000.
 *
 ******************************************************************************/
- 	.section	.isr_vector,"a",%progbits
-	.type	g_pfnVectors, %object
-	.size	g_pfnVectors, .-g_pfnVectors
-
+.section	.isr_vector,"a",%progbits
+.type	g_pfnVectors, %object
+.size	g_pfnVectors, .-g_pfnVectors
 
 g_pfnVectors:
-	.word	_estack
+	.word	_stack_end
 	.word	Reset_Handler
 	.word	NMI_Handler
 	.word	HardFault_Handler
@@ -235,6 +238,7 @@ g_pfnVectors:
 	.word	0
 	.word	0
 	.word	FPU_IRQHandler
+
 
 /*******************************************************************************
 *
@@ -469,3 +473,5 @@ g_pfnVectors:
 	.weak	FPU_IRQHandler
 	.thumb_set FPU_IRQHandler,Default_Handler
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+

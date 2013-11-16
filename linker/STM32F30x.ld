@@ -1,52 +1,46 @@
+/**
+ ******************************************************************************
+ * @file    STM32F30x.ld
+ * @author  Philippose Rajan
+ * @date    09-November-2013
+ * @brief   Linker Script for the STM32F303VCT6 Cortex-M4F Controller
+ * @see	    The GNU Public License (GPL) Version 3
+ *
+ ******************************************************************************
+ */
 /*
-*****************************************************************************
-**
-**  File        : stm32_flash.ld
-**
-**  Abstract    : Linker script for STM32F303VC Device with
-**                256KByte FLASH, 40KByte RAM
-**
-**                Set heap size, stack size and stack location according
-**                to application requirements.
-**
-**                Set memory bank area and size if external memory is used.
-**
-**  Target      : STMicroelectronics STM32
-**
-**  Environment : Atollic TrueSTUDIO(R)
-**
-**  Distribution: The file is distributed “as is,” without any warranty
-**                of any kind.
-**
-**  (c)Copyright Atollic AB.
-**  You may use this file as-is or modify it according to the needs of your
-**  project. Distribution of this file (unmodified or modified) is not
-**  permitted. Atollic AB permit registered Atollic TrueSTUDIO(R) users the
-**  rights to distribute the assembled, compiled & linked contents of this
-**  file as part of an application binary file, provided that it is built
-**  using the Atollic TrueSTUDIO(R) toolchain.
-**
-*****************************************************************************
-*/
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-/* Entry Point */
+
+
+/* Include the Linker file specifying the Memory Layout */
+INCLUDE STM32F30x_MemLayout.ld
+
+/* Include the Linker File specifying the required Heap and Stack Sizes */
+INCLUDE STM32F30x_Heap_Stack.ld
+
+
+
+/* Specify the Entry Point after a Reset */
 ENTRY(Reset_Handler)
 
-/* Highest address of the user mode stack */
-_estack = 0x2000a000;    /* end of 40K RAM */
+/* Highest address of the user mode stack (Usually end of RAM) */
+_stack_end = ORIGIN(RAM) + LENGTH(RAM);
 
-/* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0;      /* required amount of heap  */
-_Min_Stack_Size = 0x200; /* required amount of stack */
 
-/* Specify the memory areas */
-MEMORY
-{
-  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 256K
-  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 40K
-  MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
-  CCMRAM (rw)     : ORIGIN = 0x10000000, LENGTH = 8K
-}
 
 /* Define output sections */
 SECTIONS
@@ -67,8 +61,8 @@ SECTIONS
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
-    *(.glue_7)         /* glue arm to thumb code */
-    *(.glue_7t)        /* glue thumb to arm code */
+    *(.glue_7)         /* glue arm to thumb code (Probably not required...) */
+    *(.glue_7t)        /* glue thumb to arm code (Probably not required...) */
     *(.eh_frame)
 
     KEEP (*(.init))
@@ -79,12 +73,19 @@ SECTIONS
   } >FLASH
 
 
-   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
-    .ARM : {
+  /* Exception Handling sections */
+  .ARM.extab : 
+  { 
+    *(.ARM.extab* .gnu.linkonce.armextab.*) 
+  } >FLASH
+  
+  .ARM : 
+  {
     __exidx_start = .;
-      *(.ARM.exidx*)
-      __exidx_end = .;
-    } >FLASH
+    *(.ARM.exidx*)
+    __exidx_end = .;
+  } >FLASH
+
 
   .preinit_array     :
   {
@@ -92,6 +93,8 @@ SECTIONS
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
   } >FLASH
+  
+  
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
@@ -99,6 +102,8 @@ SECTIONS
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
   } >FLASH
+  
+  
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
@@ -107,11 +112,13 @@ SECTIONS
     PROVIDE_HIDDEN (__fini_array_end = .);
   } >FLASH
 
+
+
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data : 
+  .data : AT ( _sidata )
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
@@ -120,7 +127,8 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM AT> FLASH
+  } >RAM
+  
   
   _siccmram = LOADADDR(.ccmram);
 
@@ -130,7 +138,7 @@ SECTIONS
   * If initialized variables will be placed in this section, 
   * the startup code needs to be modified to copy the init-values.  
   */
-  .ccmram :
+  .ccmram : AT ( _siccmram )
   {
     . = ALIGN(4);
     _sccmram = .;       /* create a global symbol at ccmram start */
@@ -139,7 +147,8 @@ SECTIONS
     
     . = ALIGN(4);
     _eccmram = .;       /* create a global symbol at ccmram end */
-  } >CCMRAM AT> FLASH
+  } >CCMRAM
+
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -157,16 +166,18 @@ SECTIONS
     __bss_end__ = _ebss;
   } >RAM
 
+
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {
     . = ALIGN(4);
     PROVIDE ( end = . );
     PROVIDE ( _end = . );
-    . = . + _Min_Heap_Size;
-    . = . + _Min_Stack_Size;
+    . = . + _Heap_Size;
+    . = . + _Stack_Size;
     . = ALIGN(4);
   } >RAM
+
 
   /* MEMORY_bank1 section, code must be located here explicitly            */
   /* Example: extern int foo(void) __attribute__ ((section (".mb1text"))); */
@@ -177,6 +188,8 @@ SECTIONS
     *(.mb1rodata)      /* read-only data (constants) */
     *(.mb1rodata*)
   } >MEMORY_B1
+
+
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

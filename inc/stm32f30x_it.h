@@ -31,8 +31,6 @@
 #define __STM32_IT_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "platform_config.h"
-
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
@@ -46,9 +44,11 @@ void UsageFault_Handler(void);
 void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
+
 void SysTick_Handler(void);
+
+void USB_LP_CAN1_RX0_IRQHandler(void);
 void USBWakeUp_IRQHandler(void);
-void USB_FS_WKUP_IRQHandler(void);
 
 #endif /* __STM32_IT_H */
 
