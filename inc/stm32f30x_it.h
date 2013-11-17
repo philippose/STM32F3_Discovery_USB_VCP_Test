@@ -47,6 +47,8 @@ void PendSV_Handler(void);
 
 void SysTick_Handler(void);
 
+void EXTI0_IRQHandler(void);
+
 void USB_LP_CAN1_RX0_IRQHandler(void);
 void USBWakeUp_IRQHandler(void);
 

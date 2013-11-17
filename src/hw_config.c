@@ -41,6 +41,7 @@
 /* Private variables ---------------------------------------------------------*/
 ErrorStatus HSEStartUpStatus;
 EXTI_InitTypeDef EXTI_InitStructure;
+
 extern __IO uint32_t packet_sent;
 extern __IO uint8_t Send_Buffer[VIRTUAL_COM_PORT_DATA_SIZE] ;
 extern __IO  uint32_t packet_receive;
