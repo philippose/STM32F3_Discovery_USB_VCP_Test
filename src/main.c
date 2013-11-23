@@ -28,6 +28,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdio.h>
+/* #include <string.h> */
 
 #include "globals.h"
 
@@ -67,7 +68,6 @@ uint32_t packet_receive=1;
  *******************************************************************************/
 int main(void)
 {
-    Type_Err retVal;
     bool LEDSwitchedOff = FALSE;
 
     RCC_GetClocksFreq(&RCC_Clocks);
@@ -84,7 +84,7 @@ int main(void)
     USB_Init();
 
     /* Initialise the Delay Subsystem */
-    retVal = Util_Delay_Init();
+    Util_Delay_Init();
 
     /* STM32F3 Discovery specific initialisation routine */
     STM_EVAL_LEDInit(LED3);
@@ -103,13 +103,8 @@ int main(void)
     /* Now setup the User Button to generate an Interrupt */
     STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
 
-    sprintf(Send_Buffer, "%f\r\n", 3.141592);
-
-    length = 0;
-    while(Send_Buffer[length] != '\n')
-    {
-        length++;
-    }
+    length = sprintf(Send_Buffer, "%f\r\n", 3.141592);
+    /* length = strlen(Send_Buffer); */
 
     while (1)
     {
