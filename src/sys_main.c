@@ -1,34 +1,32 @@
 /**
  ******************************************************************************
- * @file    main.c
- * @author  MCD Application Team
- * @version V4.0.0
- * @date    21-January-2013
- * @brief   Virtual Com Port Demo main file
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
- *
- * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at:
- *
- *        http://www.st.com/software_license_agreement_liberty_v2
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @file    sys_main.c
+ * @author  Philippose Rajan
+ * @date    17.11.2013
+ * @brief   Primary file containing the main function
+ * @see     The GNU Public License (GPL) Version 3
  *
  ******************************************************************************
+ */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdio.h>
-/* #include <string.h> */
 
 #include "globals.h"
 
