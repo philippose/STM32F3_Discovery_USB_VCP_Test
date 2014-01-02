@@ -33,6 +33,7 @@
 #include "hw_config.h"
 #include "usb_istr.h"
 #include "usb_pwr.h"
+#include "sys_usb.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -41,15 +42,10 @@
 #define VCOMPORT_IN_FRAME_INTERVAL             5
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern __IO uint32_t packet_sent;
-extern __IO uint32_t packet_receive;
-extern __IO uint8_t Receive_Buffer[64];
-uint32_t Receive_length;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : EP1_IN_Callback
 * Description    :
 * Input          : None.
 * Output         : None.
@@ -58,21 +54,21 @@ uint32_t Receive_length;
 
 void EP1_IN_Callback (void)
 {
-  packet_sent = 1;
+  Set_Packet_Sent(1);
 }
 
 /*******************************************************************************
-* Function Name  : EP3_OUT_Callback
-* Description    :
-* Input          : None.
-* Output         : None.
-* Return         : None.
+* @brief        The OUT Callback is called when data is sent "out" from the
+*               Host PC to the Microcontroller
+* @param        None
+* @param        None
+* @retval       None
 *******************************************************************************/
 void EP3_OUT_Callback(void)
 {
-  packet_receive = 1;
-  Receive_length = GetEPRxCount(ENDP3);
-  PMAToUserBufferCopy((unsigned char*)Receive_Buffer, ENDP3_RXADDR, Receive_length);
+  Set_Packet_Received(1);
+  receiveLength = GetEPRxCount(ENDP3);
+  PMAToUserBufferCopy((unsigned char*)recieveBuffer, ENDP3_RXADDR, receiveLength);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

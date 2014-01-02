@@ -1,9 +1,10 @@
 /**
  ******************************************************************************
- * @file    globals.h
+ * @file    sys_types.h
  * @author  Philippose Rajan
- * @date    17.11.2013
- * @brief   Global includes, exports, variables, etc...
+ * @date    24.11.2013
+ * @brief   Custom Data types which need to be visible throughout the application
+ *
  * @see     The GNU Public License (GPL) Version 3
  *
  ******************************************************************************
@@ -24,23 +25,20 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __GLOBALS_H
-#define __GLOBALS_H
+#ifndef __SYS_TYPES_H
+#define __SYS_TYPES_H
 
-/* ---- Commonly required Includes -------------------------------------- */
-#include "sys_types.h"
-#include "hw_config.h"
+/* ---- Publicly visible Macros ---------------------------------------- */
+typedef enum Type_Err
+{
+    ERR_OK              = 0,
+    ERR_INV_PARAM       = 10,
+    ERR_INIT_FAILED     = 20
+} Type_Err;
 
-/* ---- Subsystems to be included --------------------------------------- */
-#include "util_delay.h"
-#include "sys_usb.h"
+/* ---- Publicly visible Variables and Constants ----------------------- */
+
+/* ---- Publicly visible Functions ------------------------------------- */
 
 
-/* ---- Global Defines and Macros --------------------------------------- */
-#define SYSTICK_PERIOD          10      /*! Systick period [in ms] */
-
-/* ---- Global Variables ------------------------------------------------ */
-
-/* ---- Global Functions ------------------------------------------------ */
-
-#endif /* __GLOBALS_H */
+#endif /* __SYS_TYPES_H */

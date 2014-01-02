@@ -1,9 +1,10 @@
 /**
  ******************************************************************************
- * @file    globals.h
+ * @file    sys_com.h
  * @author  Philippose Rajan
- * @date    17.11.2013
- * @brief   Global includes, exports, variables, etc...
+ * @date    31.12.2013
+ * @brief   <Put in a brief description here>
+ *
  * @see     The GNU Public License (GPL) Version 3
  *
  ******************************************************************************
@@ -24,23 +25,15 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __GLOBALS_H
-#define __GLOBALS_H
+#ifndef __SYS_COM_H
+#define __SYS_COM_H
 
-/* ---- Commonly required Includes -------------------------------------- */
-#include "sys_types.h"
-#include "hw_config.h"
+/* ---- Publicly visible Macros ---------------------------------------- */
 
-/* ---- Subsystems to be included --------------------------------------- */
-#include "util_delay.h"
-#include "sys_usb.h"
+/* ---- Publicly visible Variables and Constants ----------------------- */
 
 
-/* ---- Global Defines and Macros --------------------------------------- */
-#define SYSTICK_PERIOD          10      /*! Systick period [in ms] */
+/* ---- Publicly visible Functions ------------------------------------- */
 
-/* ---- Global Variables ------------------------------------------------ */
 
-/* ---- Global Functions ------------------------------------------------ */
-
-#endif /* __GLOBALS_H */
+#endif /* __SYS_COM_H */

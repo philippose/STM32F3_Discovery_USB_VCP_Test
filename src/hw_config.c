@@ -42,13 +42,7 @@
 ErrorStatus HSEStartUpStatus;
 EXTI_InitTypeDef EXTI_InitStructure;
 
-extern __IO uint32_t packet_sent;
-extern __IO uint8_t Send_Buffer[VIRTUAL_COM_PORT_DATA_SIZE] ;
-extern __IO  uint32_t packet_receive;
-extern __IO uint8_t Receive_length;
 
-uint8_t Receive_Buffer[64];
-uint32_t Send_length;
 static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
 /* Extern variables ----------------------------------------------------------*/
 
@@ -114,6 +108,8 @@ void Set_System(void)
     EXTI_Init(&EXTI_InitStructure);
 }
 
+
+
 /*******************************************************************************
  * Function Name  : Set_USBClock
  * Description    : Configures USB Clock input (48MHz)
@@ -129,6 +125,8 @@ void Set_USBClock(void)
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 }
 
+
+
 /*******************************************************************************
  * Function Name  : Enter_LowPowerMode
  * Description    : Power-off system clocks and power while entering suspend mode
@@ -140,6 +138,8 @@ void Enter_LowPowerMode(void)
     /* Set the device state to suspend */
     bDeviceState = SUSPENDED;
 }
+
+
 
 /*******************************************************************************
  * Function Name  : Leave_LowPowerMode
@@ -190,6 +190,8 @@ void Leave_LowPowerMode(void)
     //SystemInit();
 }
 
+
+
 /*******************************************************************************
  * Function Name  : USB_Interrupts_Config
  * Description    : Configures the USB interrupts
@@ -216,6 +218,8 @@ void USB_Interrupts_Config(void)
     NVIC_Init(&NVIC_InitStructure);
 }
 
+
+
 /*******************************************************************************
  * Function Name  : USB_Cable_Config
  * Description    : Software Connection/Disconnection of USB Cable
@@ -233,6 +237,8 @@ void USB_Cable_Config (FunctionalState NewState)
         GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
     }
 }
+
+
 
 /*******************************************************************************
  * Function Name  : Get_SerialNum.
@@ -257,6 +263,8 @@ void Get_SerialNum(void)
         IntToUnicode (Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
     }
 }
+
+
 
 /*******************************************************************************
  * Function Name  : HexToChar.
@@ -284,47 +292,6 @@ static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
 
         pbuf[ 2* idx + 1] = 0;
     }
-}
-
-/*******************************************************************************
- * Function Name  : Send DATA .
- * Description    : send the data received from the STM32 to the PC through USB
- * Input          : None.
- * Output         : None.
- * Return         : None.
- *******************************************************************************/
-uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length)
-{
-    /*if max buffer is Not reached*/
-    if(Send_length < VIRTUAL_COM_PORT_DATA_SIZE)
-    {
-        /*Sent flag*/
-        packet_sent = 0;
-        /* send  packet to PMA*/
-        UserToPMABufferCopy((unsigned char*)ptrBuffer, ENDP1_TXADDR, Send_length);
-        SetEPTxCount(ENDP1, Send_length);
-        SetEPTxValid(ENDP1);
-    }
-    else
-    {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * Function Name  : Receive DATA .
- * Description    : receive the data from the PC to STM32 and send it through USB
- * Input          : None.
- * Output         : None.
- * Return         : None.
- *******************************************************************************/
-uint32_t CDC_Receive_DATA(void)
-{ 
-    /*Receive flag*/
-    packet_receive = 0;
-    SetEPRxValid(ENDP3);
-    return 1 ;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

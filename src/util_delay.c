@@ -34,20 +34,21 @@ Type_Err Util_Delay_Init(void);
 
 void Util_Delay_ms(uint32_t timeMs);
 
+void Util_Delay_us(uint32_t timeUs);
 
 /* ---- Local Variables -------------------------------------------------- */
 static uint32_t uSecTicks;
-
-static uint32_t remainingMs;
+static bool subSysReady;
 
 /* ---- Local Functions -------------------------------------------------- */
-static void Util_Delay_us(uint32_t timeUs);
 
 /* ----------------------------------------------------------------------- */
 
 Type_Err Util_Delay_Init(void)
 {
     RCC_ClocksTypeDef clockData;
+
+    subSysReady = FALSE;
 
     /* Gets the number of ticks for 1 usec */
     RCC_GetClocksFreq(&clockData);
@@ -58,12 +59,17 @@ Type_Err Util_Delay_Init(void)
     DWT->CYCCNT = 0;
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
+    subSysReady = TRUE;
+
     return ERR_OK;
 }
 
 
 void Util_Delay_us(uint32_t timeUs)
 {
+    /* Return immediately if the Delay system has not been initiated */
+    if(!subSysReady) return;
+
     uint32_t strt = DWT->CYCCNT;
 
     for(;;)
@@ -81,7 +87,10 @@ void Util_Delay_us(uint32_t timeUs)
 
 void Util_Delay_ms(uint32_t timeMs)
 {
-    remainingMs = timeMs;
+    /* Return immediately if the Delay system has not been initiated */
+    if(!subSysReady) return;
+
+    uint32_t remainingMs = timeMs;
 
     /* Decrement the number of milliseconds each time 1000 usecs have passed */
     while(remainingMs > 0)

@@ -35,6 +35,7 @@
 #include "stm32f3_discovery.h"
 
 #include "usb_type.h"
+#include "usb_desc.h"
 
 
 /* Exported types ------------------------------------------------------------*/
@@ -61,8 +62,6 @@ void USB_Cable_Config (FunctionalState NewState);
 
 void Get_SerialNum(void);
 
-uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length);
-uint32_t CDC_Receive_DATA(void);
 /* External variables --------------------------------------------------------*/
 
 #endif  /*__HW_CONFIG_H*/

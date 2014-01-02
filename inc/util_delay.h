@@ -24,8 +24,8 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef UTIL_DELAY_H_
-#define UTIL_DELAY_H_
+#ifndef __UTIL_DELAY_H
+#define __UTIL_DELAY_H
 
 /* ---- Publicly visible Macros ---------------------------------------- */
 
@@ -34,17 +34,24 @@
 /* ---- Publicly visible functions ------------------------------------- */
 
 /**
- * @brief  Initialises the Delay Utilities
- * @param  None
- * @retval Status of Initialisation
+ * @brief   Initialises the Delay Utilities
+ * @param   None
+ * @retval  Status of Initialisation
  */
 extern Type_Err Util_Delay_Init(void);
 
+/**
+ * @brief   Generates a delay of the given time in microseconds
+ * @param   timeUs   Delay time in microseconds
+ * @retval  None
+ */
+extern void Util_Delay_us(uint32_t timeUs);
 
 /**
- * @brief Generates a delay of the given time in milliseconds
- * @param
+ * @brief   Generates a delay of the given time in milliseconds
+ * @param   timeMs   Delay time in milliseconds
+ * @retval  None
  */
 extern void Util_Delay_ms(uint32_t timeMs);
 
-#endif /* UTIL_DELAY_H_ */
+#endif /* __UTIL_DELAY_H */
