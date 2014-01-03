@@ -58,8 +58,6 @@ extern LINE_CODING linecoding;
  *******************************************************************************/
 void Set_System(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure;
-
     /*!< At this stage the microcontroller clock setting is already configured,
        this is done through SystemInit() function which is called from startup
        file (startup_stm32f10x_xx.s) before to branch to application main.
@@ -67,19 +65,84 @@ void Set_System(void)
        system_stm32f10x.c file
      */   
 
-    /* Enable the PWR clock */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+    /* Enable all the relevant peripheral clocks */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 |
+                           RCC_APB1Periph_TIM3 |
+                           RCC_APB1Periph_TIM4 |
+                           RCC_APB1Periph_TIM6 |
+                           RCC_APB1Periph_TIM7 |
+                           RCC_APB1Periph_WWDG |
+                           RCC_APB1Periph_SPI2 |
+                           RCC_APB1Periph_SPI3 |
+                           RCC_APB1Periph_USART2 |
+                           RCC_APB1Periph_USART3 |
+                           RCC_APB1Periph_UART4 |
+                           RCC_APB1Periph_UART5 |
+                           RCC_APB1Periph_I2C1 |
+                           RCC_APB1Periph_I2C2 |
+                           RCC_APB1Periph_USB |
+                           RCC_APB1Periph_CAN1 |
+                           RCC_APB1Periph_PWR |
+                           RCC_APB1Periph_DAC |
+                           0, ENABLE);
 
-    /* Enable the SYSCFG module clock */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
-#if defined(STM32F30X)
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
+                           RCC_APB2Periph_TIM8 |
+                           RCC_APB2Periph_TIM15 |
+                           RCC_APB2Periph_TIM16 |
+                           RCC_APB2Periph_TIM17 |
+                           RCC_APB2Periph_USART1 |
+                           RCC_APB2Periph_SPI1 |
+                           RCC_APB2Periph_SYSCFG |
+                           0, ENABLE);
 
-    /* Enable the USB disconnect GPIO clock */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
+
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA |
+                          RCC_AHBPeriph_GPIOB |
+                          RCC_AHBPeriph_GPIOC |
+                          RCC_AHBPeriph_GPIOD |
+                          RCC_AHBPeriph_GPIOE |
+                          RCC_AHBPeriph_GPIOF |
+                          RCC_AHBPeriph_TS |
+                          RCC_AHBPeriph_CRC |
+                          RCC_AHBPeriph_FLITF |
+                          RCC_AHBPeriph_SRAM |
+                          RCC_AHBPeriph_DMA2 |
+                          RCC_AHBPeriph_DMA1 |
+                          RCC_AHBPeriph_ADC34 |
+                          RCC_AHBPeriph_ADC12 |
+                          0, ENABLE);
+
+
+    /* Setup the I/O Pins to all inputs, except for the USB and JTAG pins */
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+    GPIO_StructInit(&GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+
+    /* Remove the USB and JTAG Pins from the list */
+    GPIO_InitStructure.GPIO_Pin &= ~(GPIO_Pin_11 | GPIO_Pin_12);
+    GPIO_InitStructure.GPIO_Pin &= ~(GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
+
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+    GPIO_Init(GPIOF, &GPIO_InitStructure);
+}
+
+
+
+void USB_Pins_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
 
     /*Set PA11,12 as IN - USB_DM,DP*/
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -98,7 +161,6 @@ void Set_System(void)
     GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
-#endif /* STM32F30X */
 
     /* Configure the EXTI line 18 connected internally to the USB IP */
     EXTI_ClearITPendingBit(EXTI_Line18);
@@ -186,8 +248,6 @@ void Leave_LowPowerMode(void)
     {
         bDeviceState = ATTACHED;
     }
-    /*Enable SystemCoreClock*/
-    //SystemInit();
 }
 
 
@@ -203,19 +263,31 @@ void USB_Interrupts_Config(void)
     NVIC_InitTypeDef NVIC_InitStructure;
 
     /* 2 bit for pre-emption priority, 2 bits for subpriority */
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    /* NOTE: This goes against the FreeRTOS requirements.... check and remove!!! */
+    /* NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); */
 
     /* Enable the USB interrupt */
     NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = SYS_IRQ_PRIO_LOW;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
     /* Enable the USB Wake-up interrupt */
     NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = SYS_IRQ_PRIO_HIGH;
     NVIC_Init(&NVIC_InitStructure);
+}
+
+
+
+void NVIC_Configuration(void)
+{
+    /* This is required for FreeRTOS (Refer: http://www.freertos.org/RTOS-Cortex-M3-M4.html) */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+
+    /* Set HCLK as the source for Systick */
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 }
 
 

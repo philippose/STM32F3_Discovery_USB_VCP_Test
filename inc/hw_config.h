@@ -40,6 +40,14 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+
+/* ---- Define the internal IRQ priorities - Important for FreeRTOS --------- */
+#define SYS_IRQ_PRIO_HIGHEST                  4
+#define SYS_IRQ_PRIO_HIGH                     5
+#define SYS_IRQ_PRIO_MID                      8
+#define SYS_IRQ_PRIO_LOW                      12
+/* -------------------------------------------------------------------------- */
+
 #ifdef STM32F30X
   #define USB_DISCONNECT                      GPIOE
   #define USB_DISCONNECT_PIN                  GPIO_Pin_14
@@ -52,11 +60,15 @@
 
 /* Exported functions ------------------------------------------------------- */
 void Set_System(void);
-void Set_USBClock(void);
 
 void Enter_LowPowerMode(void);
 void Leave_LowPowerMode(void);
 
+void NVIC_Configuration(void);
+
+
+void Set_USBClock(void);
+void USB_Pins_Config(void);
 void USB_Interrupts_Config(void);
 void USB_Cable_Config (FunctionalState NewState);
 

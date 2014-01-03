@@ -64,7 +64,6 @@ static void Sys_Init(void);
 static void SubSys_Init(void);
 
 
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -166,20 +165,28 @@ int main(void)
 
 void Sys_Init(void)
 {
-    RCC_ClocksTypeDef RCC_Clocks;
+    /* RCC_ClocksTypeDef RCC_Clocks; */
 
-    /* Setup the basic system */
+    /* At this point, the function **SystemInit** has already been run from the Startup file */
+    /* Continue the Initialisation of the system from here.... */
+    SystemCoreClockUpdate();
+
+    /* Setup the interrupt settings as per the requirements of FreeRTOS */
+    NVIC_Configuration();
+
+    /* Setup the basic system - peripherals, I/O Pins to default, etc... */
     Set_System();
 
     /* Setup the USB Subsystem */
+    USB_Pins_Config();
     Set_USBClock();
     USB_Interrupts_Config();
     USB_Init();
 
     /* Set the SysTick to interrupt at "SYSTICK_PERIOD" ms intervals */
-    RCC_GetClocksFreq(&RCC_Clocks);
-    SysTick_Config(RCC_Clocks.HCLK_Frequency / (1000 / SYSTICK_PERIOD));
-
+    /* NOTE: This is probably not required at all when using FreeRTOS ..... check and remove !!!! */
+    /* RCC_GetClocksFreq(&RCC_Clocks); */
+    /* SysTick_Config(RCC_Clocks.HCLK_Frequency / (1000 / SYSTICK_PERIOD)); */
 }
 
 
@@ -199,6 +206,8 @@ void SubSys_Init(void)
     STM_EVAL_LEDInit(LED9);
     STM_EVAL_LEDInit(LED10);
 }
+
+
 
 
 #ifdef USE_FULL_ASSERT

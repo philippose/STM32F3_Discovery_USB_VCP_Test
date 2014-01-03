@@ -1,9 +1,10 @@
 /**
  ******************************************************************************
- * @file    globals.h
+ * @file    sys_rtos.h
  * @author  Philippose Rajan
- * @date    17.11.2013
- * @brief   Global includes, exports, variables, etc...
+ * @date    03.01.2014
+ * @brief   <Put in a brief description here>
+ *
  * @see     The GNU Public License (GPL) Version 3
  *
  ******************************************************************************
@@ -24,30 +25,18 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __GLOBALS_H
-#define __GLOBALS_H
+#ifndef __sys_rtos_H
+#define __sys_rtos_H
 
-/* ---- Commonly required Includes -------------------------------------- */
-#include "sys_types.h"
-#include "hw_config.h"
-
-/* ---- Subsystems to be included --------------------------------------- */
-#include "util_delay.h"
-#include "sys_usb.h"
-#include "sys_rtos.h"
-
-/* ---- FreeRTOS related includes --------------------------------------- */
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
-#include "semphr.h"
+
+/* ---- Publicly visible Macros ---------------------------------------- */
+
+/* ---- Publicly visible Variables and Constants ----------------------- */
+
+/* ---- Publicly visible Functions ------------------------------------- */
+extern void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName);
 
 
-/* ---- Global Defines and Macros --------------------------------------- */
-#define SYSTICK_PERIOD          10      /*! Systick period [in ms] */
-
-/* ---- Global Variables ------------------------------------------------ */
-
-/* ---- Global Functions ------------------------------------------------ */
-
-#endif /* __GLOBALS_H */
+#endif /* __sys_rtos_H */

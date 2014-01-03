@@ -124,9 +124,11 @@ void UsageFault_Handler(void)
  * Output         : None
  * Return         : None
  *******************************************************************************/
+/*
 void SVC_Handler(void)
 {
 }
+*/
 
 /*******************************************************************************
  * Function Name  : DebugMon_Handler
@@ -146,9 +148,11 @@ void DebugMon_Handler(void)
  * Output         : None
  * Return         : None
  *******************************************************************************/
+/*
 void PendSV_Handler(void)
 {
 }
+*/
 
 /*******************************************************************************
  * Function Name  : SysTick_Handler
@@ -157,9 +161,11 @@ void PendSV_Handler(void)
  * Output         : None
  * Return         : None
  *******************************************************************************/
+/*
 void SysTick_Handler(void)
 {
 }
+*/
 
 /*******************************************************************************
  * Function Name  : EXTI0_IRQHandler
