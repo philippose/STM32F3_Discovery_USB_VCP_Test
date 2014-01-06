@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    sys_main.c
+ * @file    main.c
  * @author  Philippose Rajan
  * @date    17.11.2013
  * @brief   Primary file containing the main function
