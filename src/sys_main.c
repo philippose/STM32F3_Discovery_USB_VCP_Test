@@ -64,6 +64,34 @@ static void Sys_Init(void);
 static void SubSys_Init(void);
 
 
+/* ---- Parameters for the Initialisation Task ------------------------------ */
+#define STACK_SUBSYS_INIT       (100)
+#define PRIORITY_SUBSYS_INIT    (tskIDLE_PRIORITY + configMAX_PRIORITIES - 1)
+portTASK_FUNCTION_PROTO(taskSubSysInit, pvParameters);
+xTaskHandle hndSubSysInit;
+/* -------------------------------------------------------------------------- */
+
+/* ---- Parameters for the Dummy Receiver Task ------------------------------ */
+#define STACK_DUMMY_RECV        (configMINIMAL_STACK_SIZE)
+#define PRIORITY_DUMMY_RECV     (tskIDLE_PRIORITY + 3)
+portTASK_FUNCTION_PROTO(taskDummyReceiver, pvParameters);
+xTaskHandle hndDummyReceiver;
+/* -------------------------------------------------------------------------- */
+
+/* ---- Parameters for the Task transmitting data --------------------------- */
+#define STACK_USB_DATA_TX       (configMINIMAL_STACK_SIZE)
+#define PRIORITY_USB_DATA_TX    (tskIDLE_PRIORITY + 3)
+portTASK_FUNCTION_PROTO(taskUSBDataTx, pvParameters);
+xTaskHandle hndUSBDataTx;
+/* -------------------------------------------------------------------------- */
+
+/* ---- Parameters for the Heartbeat Task ----------------------------------- */
+#define STACK_HEARTBEAT         (configMINIMAL_STACK_SIZE)
+#define PRIORITY_HEARTBEAT      (tskIDLE_PRIORITY + 3)
+portTASK_FUNCTION_PROTO(taskHeartBeat, pvParameters);
+xTaskHandle hndHeartBeat;
+/* -------------------------------------------------------------------------- */
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -74,90 +102,43 @@ static void SubSys_Init(void);
 int main(void)
 {
     bool LEDSwitchedOff = FALSE;
-
-    /* Basic System initialisation */
-    Sys_Init();
-
-    /* Initialise the various Sub-Systems */
-    SubSys_Init();
+    int32_t result;
 
     /* Initialise the User Button State to 0 */
     userButtonState = 0x00;
 
-    /* Now setup the User Button to generate an Interrupt */
-    STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
+    /* Basic System initialisation */
+    Sys_Init();
 
-    length = sprintf(sendBuffer, "%f\r\n", 3.141592);
-    /* length = strlen(sendBuffer); */
+    result = xTaskCreate(taskSubSysInit, (const signed char *)"Init", STACK_SUBSYS_INIT, NULL, PRIORITY_SUBSYS_INIT, &hndSubSysInit);
 
-    while (1)
+    SYS_ASSERT(result == pdPASS);
+
+    vTaskStartScheduler();
+
+
+
+    /* --- If all goes well, does not get here --- */
+    length = sprintf(sendBuffer, "Error...\r\n");
+
+    STM_EVAL_LEDOff(LED4);
+    STM_EVAL_LEDOff(LED5);
+    STM_EVAL_LEDOff(LED6);
+    STM_EVAL_LEDOff(LED7);
+    STM_EVAL_LEDOff(LED8);
+    STM_EVAL_LEDOff(LED9);
+    STM_EVAL_LEDOff(LED3);
+    STM_EVAL_LEDOff(LED10);
+
+    while(1)
     {
-        if (bDeviceState == CONFIGURED)
+        if(Packet_Sent())
         {
-            CDC_Receive_DATA();
-            /*Check to see if we have data yet */
-            //if (Receive_length  != 0)
-            if(userButtonState > 0)
-            {
-                if(!LEDSwitchedOff)
-                {
-                    STM_EVAL_LEDOff(LED4);
-                    STM_EVAL_LEDOff(LED5);
-                    STM_EVAL_LEDOff(LED6);
-                    STM_EVAL_LEDOff(LED7);
-                    STM_EVAL_LEDOff(LED8);
-                    STM_EVAL_LEDOff(LED9);
-                    STM_EVAL_LEDOff(LED3);
-                    LEDSwitchedOff = TRUE;
-                }
-
-                STM_EVAL_LEDToggle(LED10);
-                Util_Delay_ms(50);
-
-                if (Packet_Sent())
-                {
-                    CDC_Send_DATA ((unsigned char*)sendBuffer,length);
-                    userButtonState = 0;
-                }
-
-                receiveLength = 0;
-            }
+            CDC_Send_DATA((unsigned char *)sendBuffer, length);
         }
-        else
-        {
-            /* Toggle LD3 */
-            STM_EVAL_LEDToggle(LED3);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD5 */
-            STM_EVAL_LEDToggle(LED5);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD7 */
-            STM_EVAL_LEDToggle(LED7);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD9 */
-            STM_EVAL_LEDToggle(LED9);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD10 */
-            STM_EVAL_LEDToggle(LED10);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD8 */
-            STM_EVAL_LEDToggle(LED8);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD6 */
-            STM_EVAL_LEDToggle(LED6);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-            /* Toggle LD4 */
-            STM_EVAL_LEDToggle(LED4);
-            /* Insert 50 ms delay */
-            Util_Delay_ms(50);
-        }
+
+        STM_EVAL_LEDToggle(LED3);
+        Util_Delay_ms(2000);
     }
 } 
 
@@ -177,11 +158,8 @@ void Sys_Init(void)
     /* Setup the basic system - peripherals, I/O Pins to default, etc... */
     Set_System();
 
-    /* Setup the USB Subsystem */
-    USB_Pins_Config();
-    Set_USBClock();
-    USB_Interrupts_Config();
-    USB_Init();
+    /* Initialise the Delay Subsystem */
+    Util_Delay_Init();
 
     /* Set the SysTick to interrupt at "SYSTICK_PERIOD" ms intervals */
     /* NOTE: This is probably not required at all when using FreeRTOS ..... check and remove !!!! */
@@ -193,8 +171,14 @@ void Sys_Init(void)
 
 void SubSys_Init(void)
 {
-    /* Initialise the Delay Subsystem */
-    Util_Delay_Init();
+    /* Setup the USB Subsystem */
+    USB_Pins_Config();
+    Set_USBClock();
+    USB_Interrupts_Config();
+    USB_Init();
+
+    /* Now setup the User Button to generate an Interrupt */
+    STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
 
     /* STM32F3 Discovery specific initialisation routine */
     STM_EVAL_LEDInit(LED3);
@@ -205,6 +189,82 @@ void SubSys_Init(void)
     STM_EVAL_LEDInit(LED8);
     STM_EVAL_LEDInit(LED9);
     STM_EVAL_LEDInit(LED10);
+}
+
+
+
+portTASK_FUNCTION(taskSubSysInit, pvParameters)
+{
+    uint32_t result;
+
+    /* Initialise the various Sub-Systems */
+    SubSys_Init();
+
+    result = xTaskCreate(taskHeartBeat, (const signed char *)"Heart Beat", STACK_HEARTBEAT, NULL, PRIORITY_HEARTBEAT, &hndHeartBeat);
+    SYS_ASSERT(result == pdPASS);
+
+    result = xTaskCreate(taskDummyReceiver, (const signed char *)"Dummy USB Receiver", STACK_DUMMY_RECV, NULL, PRIORITY_DUMMY_RECV, &hndDummyReceiver);
+    SYS_ASSERT(result == pdPASS);
+
+    result = xTaskCreate(taskUSBDataTx, (const signed char *)"USB Data Tx", STACK_USB_DATA_TX, NULL, PRIORITY_USB_DATA_TX, &hndUSBDataTx);
+    SYS_ASSERT(result == pdPASS);
+
+    /* Terminate this task once all the initialisation is done */
+    vTaskDelete(NULL);
+}
+
+
+
+portTASK_FUNCTION(taskHeartBeat, pvParameters)
+{
+    portTickType nextHeartBeatTime;
+
+    STM_EVAL_LEDOff(LED10);
+
+    nextHeartBeatTime = xTaskGetTickCount();
+
+    for(;;)
+    {
+        vTaskDelayUntil(&nextHeartBeatTime, HEARTBEAT_PERIOD / portTICK_RATE_MS);
+
+        STM_EVAL_LEDToggle(LED10);
+    }
+}
+
+
+
+portTASK_FUNCTION(taskDummyReceiver, pvParameters)
+{
+    for(;;)
+    {
+        if(bDeviceState == CONFIGURED)
+        {
+            if(Packet_Received())
+            {
+                CDC_Receive_DATA();
+                Set_Packet_Received(0);
+                receiveLength = 0;
+            }
+        }
+    }
+}
+
+
+
+portTASK_FUNCTION(taskUSBDataTx, pvParameters)
+{
+    portTickType nextRunTime;
+
+    STM_EVAL_LEDOff(LED7);
+
+    nextRunTime = xTaskGetTickCount();
+
+    for(;;)
+    {
+        vTaskDelayUntil(&nextRunTime, 500 / portTICK_RATE_MS);
+
+        STM_EVAL_LEDToggle(LED7);
+    }
 }
 
 

@@ -27,7 +27,7 @@
 
 /* Verify that the heap and stack fit into the RAM */
 /* Required Heap size */
-_Heap_Size = 0x6400;      
+_Heap_Size = 0x0;      
 
 /* Required Stack size */
 _Stack_Size = 0x200; 

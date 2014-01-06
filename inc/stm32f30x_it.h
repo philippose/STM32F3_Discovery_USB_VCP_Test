@@ -1,57 +1,55 @@
 /**
-  ******************************************************************************
-  * @file    stm32_it.h
-  * @author  MCD Application Team
-  * @version V4.0.0
-  * @date    21-January-2013
-  * @brief   This file contains the headers of the interrupt handlers.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
-  *
-  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        http://www.st.com/software_license_agreement_liberty_v2
-  *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f30x_it.h
+ * @author  Philippose Rajan
+ * @date    17.11.2013
+ * @brief   STM32F30x Interrupt Service Routines
+ * @see     The GNU Public License (GPL) Version 3
+ *
+ ******************************************************************************
+ */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32_IT_H
 #define __STM32_IT_H
 
-/* Includes ------------------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* ---- Publicly visible Macros ---------------------------------------- */
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-// void SVC_Handler(void);
-void DebugMon_Handler(void);
-// void PendSV_Handler(void);
+/* ---- Publicly visible Variables ------------------------------------- */
 
-// void SysTick_Handler(void);
+/* ---- Publicly visible functions ------------------------------------- */
 
-void EXTI0_IRQHandler(void);
+extern void NMI_Handler(void);
+extern void HardFault_Handler(void);
+extern void MemManage_Handler(void);
+extern void BusFault_Handler(void);
+extern void UsageFault_Handler(void);
+extern void DebugMon_Handler(void);
 
-void USB_LP_CAN1_RX0_IRQHandler(void);
-void USBWakeUp_IRQHandler(void);
+// extern void SVC_Handler(void);      /* Handled by FreeRTOS */
+// extern void PendSV_Handler(void);   /* Handled by FreeRTOS */
+// extern void SysTick_Handler(void);  /* Handled by FreeRTOS */
+
+extern void EXTI0_IRQHandler(void);
+
+extern void USB_LP_CAN1_RX0_IRQHandler(void);
+extern void USBWakeUp_IRQHandler(void);
 
 #endif /* __STM32_IT_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

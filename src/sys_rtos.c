@@ -33,11 +33,19 @@
 /* ---- Externally visible Functions ------------------------------------- */
 void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName);
 
+void vApplicationIdleHook(void);
+
 /* ---- Local Variables -------------------------------------------------- */
 
 /* ---- Local Functions -------------------------------------------------- */
 
 /* ----------------------------------------------------------------------- */
+
+void vApplicationIdleHook(void)
+{
+    /* Stub for the user function called by the FreeRTOS Idle Task */
+}
+
 
 void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName)
 {

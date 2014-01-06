@@ -38,5 +38,6 @@
 /* ---- Publicly visible Functions ------------------------------------- */
 extern void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName);
 
+extern void vApplicationIdleHook(void);
 
 #endif /* __sys_rtos_H */

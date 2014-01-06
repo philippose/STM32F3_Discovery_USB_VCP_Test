@@ -1,47 +1,63 @@
 /**
  ******************************************************************************
- * @file    stm32_it.c
- * @author  MCD Application Team
- * @version V4.0.0
- * @date    21-January-2013
- * @brief   Main Interrupt Service Routines.
- *          This file provides template for all exceptions handler and peripherals
- *          interrupt service routine.
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
- *
- * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at:
- *
- *        http://www.st.com/software_license_agreement_liberty_v2
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @file    stm32f30x_it.c
+ * @author  Philippose Rajan
+ * @date    17.11.2013
+ * @brief   STM32F30x Interrupt Service Routines
+ * @see     The GNU Public License (GPL) Version 3
  *
  ******************************************************************************
  */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
-/* Includes ------------------------------------------------------------------*/
+/* ---- Includes --------------------------------------------------------- */
 #include "globals.h"
-#include "stm32f30x_it.h"
 
 #include "util_delay.h"
 #include "usb_istr.h"
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
+/* ---- Externally visible Variables ------------------------------------- */
+
+/* ---- Externally visible Functions ------------------------------------- */
+
+void NMI_Handler(void);
+void HardFault_Handler(void);
+void MemManage_Handler(void);
+void BusFault_Handler(void);
+void UsageFault_Handler(void);
+void DebugMon_Handler(void);
+
+// void SVC_Handler(void);      /* Handled by FreeRTOS */
+// void PendSV_Handler(void);   /* Handled by FreeRTOS */
+// void SysTick_Handler(void);  /* Handled by FreeRTOS */
+
+void EXTI0_IRQHandler(void);
+
+void USB_LP_CAN1_RX0_IRQHandler(void);
+void USBWakeUp_IRQHandler(void);
+
+/* ---- Local Variables -------------------------------------------------- */
+
+/* ---- Local Functions -------------------------------------------------- */
+
+/* ----------------------------------------------------------------------- */
 extern __IO uint8_t userButtonState;
 
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+
 /******************************************************************************/
 /*            Cortex-M Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -181,9 +197,8 @@ void EXTI0_IRQHandler(void)
     {
         /* The delays are used to prevent multiple triggering of the interrupt
          * due to contact bounce on the switch */
-        Util_Delay_ms(100);
+        Util_Delay_ms(50);
         while(STM_EVAL_PBGetState(BUTTON_USER) != RESET);
-        Util_Delay_ms(100);
 
         userButtonState++;
 

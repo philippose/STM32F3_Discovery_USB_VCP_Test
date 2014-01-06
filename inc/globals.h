@@ -44,7 +44,10 @@
 
 
 /* ---- Global Defines and Macros --------------------------------------- */
+#define SYS_ASSERT(x) if(!(x)) while(1)
+
 #define SYSTICK_PERIOD          10      /*! Systick period [in ms] */
+#define HEARTBEAT_PERIOD        (1000)    /* Heart Beat Period [in ms] */
 
 /* ---- Global Variables ------------------------------------------------ */
 
