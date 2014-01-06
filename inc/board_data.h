@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file    sys_types.h
+ * @file    board_data.h
  * @author  Philippose Rajan
- * @date    24.11.2013
- * @brief   Custom Data types which need to be visible throughout the application
+ * @date    06.01.2014
+ * @brief   <Put in a brief description here>
  *
  * @see     The GNU Public License (GPL) Version 3
  *
@@ -25,29 +25,32 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __SYS_TYPES_H
-#define __SYS_TYPES_H
-
-#include "stm32f30x.h"
+#ifndef __board_data_H
+#define __board_data_H
 
 /* ---- Publicly visible Macros ---------------------------------------- */
-typedef enum Type_Err
-{
-    ERR_OK              = 0,
-    ERR_INV_PARAM       = 10,
-    ERR_INIT_FAILED     = 20
-} Type_Err;
+
+/* ---- LED Definitions for the STM32F3Discovery Board --------- */
+#define BRD_LED_BLUE_SE                                 0
+#define BRD_LED_RED_S                                   1
+#define BRD_LED_ORANGE_SW                               2
+#define BRD_LED_GREEN_W                                 3
+#define BRD_LED_BLUE_NW                                 4
+#define BRD_LED_RED_N                                   5
+#define BRD_LED_ORANGE_NE                               6
+#define BRD_LED_GREEN_E                                 7
+
+#define BRD_LED_HEARTBEAT                               (BRD_LED_GREEN_E)
+#define BRD_LED_PANIC                                   (BRD_LED_RED_S)
+#define BRD_LED_USB_STAT                                (BRD_LED_GREEN_W)
+/* ------------------------------------------------------------- */
 
 
-struct Base_GPIO
-{
-    GPIO_TypeDef *basePort;
-    GPIO_InitTypeDef initData;
-};
+
 
 /* ---- Publicly visible Variables and Constants ----------------------- */
 
 /* ---- Publicly visible Functions ------------------------------------- */
 
 
-#endif /* __SYS_TYPES_H */
+#endif /* __board_data_H */

@@ -28,13 +28,14 @@
 #define __GLOBALS_H
 
 /* ---- Commonly required Includes -------------------------------------- */
+#include "board_data.h"
 #include "sys_types.h"
 #include "hw_config.h"
 
 /* ---- Subsystems to be included --------------------------------------- */
 #include "util_delay.h"
+#include "util_led.h"
 #include "sys_usb.h"
-#include "sys_rtos.h"
 
 /* ---- FreeRTOS related includes --------------------------------------- */
 #include "FreeRTOS.h"
@@ -45,6 +46,7 @@
 
 /* ---- Global Defines and Macros --------------------------------------- */
 #define SYS_ASSERT(x) if(!(x)) while(1)
+#define NELEMENTS(x) (sizeof(x) / sizeof(*(x)))
 
 #define SYSTICK_PERIOD          10      /*! Systick period [in ms] */
 #define HEARTBEAT_PERIOD        (1000)    /* Heart Beat Period [in ms] */

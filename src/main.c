@@ -29,6 +29,7 @@
 #include <stdio.h>
 
 #include "globals.h"
+#include "sys_main.h"
 
 #include "usb_lib.h"
 #include "usb_pwr.h"
@@ -39,29 +40,8 @@
 /* Private variables ---------------------------------------------------------*/
 __IO uint8_t userButtonState;
 
-uint8_t sendBuffer[VIRTUAL_COM_PORT_DATA_SIZE];
-static uint32_t length;
-
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-/**
- * @brief       This function carries out the basic initialisation routines before jumping
- *              into the application
- * @param       None
- * @return      None
- *
- */
-static void Sys_Init(void);
-
-
-/**
- * @brief       This function carries out the initialisation of the Subsystems before jumping
- *              into the application
- * @param       None
- * @return      None
- *
- */
-static void SubSys_Init(void);
 
 
 /* ---- Parameters for the Initialisation Task ------------------------------ */
@@ -101,7 +81,6 @@ xTaskHandle hndHeartBeat;
  */
 int main(void)
 {
-    bool LEDSwitchedOff = FALSE;
     int32_t result;
 
     /* Initialise the User Button State to 0 */
@@ -110,86 +89,25 @@ int main(void)
     /* Basic System initialisation */
     Sys_Init();
 
+    /* The rest of the initialisation is performed within a FreeRTOS task to allow
+     * the scheduler to start up without and problems
+     */
     result = xTaskCreate(taskSubSysInit, (const signed char *)"Init", STACK_SUBSYS_INIT, NULL, PRIORITY_SUBSYS_INIT, &hndSubSysInit);
 
     SYS_ASSERT(result == pdPASS);
 
+    /* Start the FreeRTOS Task Scheduler*/
     vTaskStartScheduler();
 
 
 
     /* --- If all goes well, does not get here --- */
-    length = sprintf(sendBuffer, "Error...\r\n");
-
-    STM_EVAL_LEDOff(LED4);
-    STM_EVAL_LEDOff(LED5);
-    STM_EVAL_LEDOff(LED6);
-    STM_EVAL_LEDOff(LED7);
-    STM_EVAL_LEDOff(LED8);
-    STM_EVAL_LEDOff(LED9);
-    STM_EVAL_LEDOff(LED3);
-    STM_EVAL_LEDOff(LED10);
-
     while(1)
     {
-        if(Packet_Sent())
-        {
-            CDC_Send_DATA((unsigned char *)sendBuffer, length);
-        }
-
-        STM_EVAL_LEDToggle(LED3);
-        Util_Delay_ms(2000);
+        GPIOE->ODR ^= GPIO_Pin_13;
+        for(int i = 0; i < 1000000; i++);
     }
 } 
-
-
-
-void Sys_Init(void)
-{
-    /* RCC_ClocksTypeDef RCC_Clocks; */
-
-    /* At this point, the function **SystemInit** has already been run from the Startup file */
-    /* Continue the Initialisation of the system from here.... */
-    SystemCoreClockUpdate();
-
-    /* Setup the interrupt settings as per the requirements of FreeRTOS */
-    NVIC_Configuration();
-
-    /* Setup the basic system - peripherals, I/O Pins to default, etc... */
-    Set_System();
-
-    /* Initialise the Delay Subsystem */
-    Util_Delay_Init();
-
-    /* Set the SysTick to interrupt at "SYSTICK_PERIOD" ms intervals */
-    /* NOTE: This is probably not required at all when using FreeRTOS ..... check and remove !!!! */
-    /* RCC_GetClocksFreq(&RCC_Clocks); */
-    /* SysTick_Config(RCC_Clocks.HCLK_Frequency / (1000 / SYSTICK_PERIOD)); */
-}
-
-
-
-void SubSys_Init(void)
-{
-    /* Setup the USB Subsystem */
-    USB_Pins_Config();
-    Set_USBClock();
-    USB_Interrupts_Config();
-    USB_Init();
-
-    /* Now setup the User Button to generate an Interrupt */
-    STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
-
-    /* STM32F3 Discovery specific initialisation routine */
-    STM_EVAL_LEDInit(LED3);
-    STM_EVAL_LEDInit(LED4);
-    STM_EVAL_LEDInit(LED5);
-    STM_EVAL_LEDInit(LED6);
-    STM_EVAL_LEDInit(LED7);
-    STM_EVAL_LEDInit(LED8);
-    STM_EVAL_LEDInit(LED9);
-    STM_EVAL_LEDInit(LED10);
-}
 
 
 
@@ -198,7 +116,7 @@ portTASK_FUNCTION(taskSubSysInit, pvParameters)
     uint32_t result;
 
     /* Initialise the various Sub-Systems */
-    SubSys_Init();
+    Sys_Board_Init();
 
     result = xTaskCreate(taskHeartBeat, (const signed char *)"Heart Beat", STACK_HEARTBEAT, NULL, PRIORITY_HEARTBEAT, &hndHeartBeat);
     SYS_ASSERT(result == pdPASS);
@@ -219,7 +137,8 @@ portTASK_FUNCTION(taskHeartBeat, pvParameters)
 {
     portTickType nextHeartBeatTime;
 
-    STM_EVAL_LEDOff(LED10);
+    Util_LED_Off(BRD_LED_HEARTBEAT);
+    // STM_EVAL_LEDOff(LED10);
 
     nextHeartBeatTime = xTaskGetTickCount();
 
@@ -227,7 +146,8 @@ portTASK_FUNCTION(taskHeartBeat, pvParameters)
     {
         vTaskDelayUntil(&nextHeartBeatTime, HEARTBEAT_PERIOD / portTICK_RATE_MS);
 
-        STM_EVAL_LEDToggle(LED10);
+        Util_LED_Toggle(BRD_LED_HEARTBEAT);
+        //STM_EVAL_LEDToggle(LED10);
     }
 }
 
@@ -255,7 +175,8 @@ portTASK_FUNCTION(taskUSBDataTx, pvParameters)
 {
     portTickType nextRunTime;
 
-    STM_EVAL_LEDOff(LED7);
+    Util_LED_Off(BRD_LED_USB_STAT);
+    //STM_EVAL_LEDOff(LED7);
 
     nextRunTime = xTaskGetTickCount();
 
@@ -263,7 +184,8 @@ portTASK_FUNCTION(taskUSBDataTx, pvParameters)
     {
         vTaskDelayUntil(&nextRunTime, 500 / portTICK_RATE_MS);
 
-        STM_EVAL_LEDToggle(LED7);
+        Util_LED_Toggle(BRD_LED_USB_STAT);
+        //STM_EVAL_LEDToggle(LED7);
     }
 }
 

@@ -45,6 +45,7 @@
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.include.paths.360336495" name="Include paths (-I)" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32F3Discovery_USB_VCP_Test/libs/FreeRTOS/Source/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32F3Discovery_USB_VCP_Test/libs/FreeRTOS/Source/portable/GCC/ARM_CM4F}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F30x_DSP_StdPeriph_Lib_V1.0.0\Libraries\CMSIS\Include&quot;"/>
@@ -55,6 +56,7 @@
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.flags.1591960116" name="Other optimization flags" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.other.otherflags.497843721" name="Other flags" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.other.otherflags" value="-c -fmessage-length=0 -fno-builtin" valueType="string"/>
+								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.misc.std.1270891557" name="Language Standard" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.misc.std" value="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.misc.std.gnu99" valueType="enumerated"/>
 								<inputType id="org.eclipse.cdt.cross.arm.gnu.sourcery.linux.c.compiler.base.input.1306929202" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.linux.c.compiler.base.input"/>
 							</tool>
 							<tool id="org.eclipse.cdt.cross.arm.gnu.sourcery.linux.elf.cpp.compiler.release.69896490" name="ARM Linux GCC C++ Compiler (Sourcery Lite Bare)" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.linux.elf.cpp.compiler.release">
@@ -66,6 +68,7 @@
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.include.paths.1052430727" name="Include paths (-I)" superClass="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32F3Discovery_USB_VCP_Test/libs/FreeRTOS/Source/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32F3Discovery_USB_VCP_Test/libs/FreeRTOS/Source/portable/GCC/ARM_CM4F}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F30x_DSP_StdPeriph_Lib_V1.0.0\Libraries\CMSIS\Include&quot;"/>
@@ -111,7 +114,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libs/FreeRTOS/Source/portable/MemMang/heap_4.c|libs/FreeRTOS/Source/portable/MemMang/heap_3.c|libs/FreeRTOS/Source/portable/MemMang/heap_1.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/board_setup.c|libs/FreeRTOS/Source/portable/MemMang/heap_4.c|libs/FreeRTOS/Source/portable/MemMang/heap_3.c|libs/FreeRTOS/Source/portable/MemMang/heap_1.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -166,6 +169,7 @@
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F30x_DSP_StdPeriph_Lib_V1.0.0\Libraries\CMSIS\Device\ST\STM32F30x\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32_USB-FS-Device_Lib_V4.0.0\Libraries\STM32_USB-FS-Device_Driver\inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F3-Discovery_FW_V1.1.0\Utilities\STM32F3_Discovery&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/STM32F3Discovery_USB_VCP_Test/src}&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.flags.460119948" name="Other optimization flags" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.other.otherflags.21385163" name="Other flags" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.other.otherflags" value="-c -fmessage-length=0 -fno-builtin" valueType="string"/>
@@ -187,6 +191,7 @@
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F30x_DSP_StdPeriph_Lib_V1.0.0\Libraries\CMSIS\Device\ST\STM32F30x\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32_USB-FS-Device_Lib_V4.0.0\Libraries\STM32_USB-FS-Device_Driver\inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\STM32F3Discovery\STM32F3-Discovery_FW_V1.1.0\Utilities\STM32F3_Discovery&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.flags.1235059959" name="Other optimization flags" superClass="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.other.otherflags.427511263" name="Other flags" superClass="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.other.otherflags" value="-c -fmessage-length=0 -fno-builtin" valueType="string"/>
@@ -227,7 +232,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libs/FreeRTOS/Source/portable/MemMang/heap_4.c|libs/FreeRTOS/Source/portable/MemMang/heap_3.c|libs/FreeRTOS/Source/portable/MemMang/heap_1.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/board_setup.c|libs/FreeRTOS/Source/portable/MemMang/heap_4.c|libs/FreeRTOS/Source/portable/MemMang/heap_3.c|libs/FreeRTOS/Source/portable/MemMang/heap_1.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

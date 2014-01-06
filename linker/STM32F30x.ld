@@ -74,6 +74,7 @@ SECTIONS
   } >FLASH
   
   
+  
   /* Modules / Tasks go into this section */
   .regmod_tasks.init :
   {
@@ -83,6 +84,7 @@ SECTIONS
     . = ALIGN(4);
     __reg_mod_tasks_end = .;
   } >FLASH
+ 
 
 
   /* Exception Handling sections */
@@ -197,7 +199,7 @@ SECTIONS
   .debug_funcnames 0 : { *(.debug_funcnames) }
   .debug_typenames 0 : { *(.debug_typenames) }
   .debug_varnames 0 : { *(.debug_varnames) }
-  
+
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file    sys_types.h
+ * @file    util_led.h
  * @author  Philippose Rajan
- * @date    24.11.2013
- * @brief   Custom Data types which need to be visible throughout the application
+ * @date    06.01.2014
+ * @brief   <Put in a brief description here>
  *
  * @see     The GNU Public License (GPL) Version 3
  *
@@ -25,29 +25,19 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __SYS_TYPES_H
-#define __SYS_TYPES_H
-
-#include "stm32f30x.h"
+#ifndef __util_led_H
+#define __util_led_H
 
 /* ---- Publicly visible Macros ---------------------------------------- */
-typedef enum Type_Err
-{
-    ERR_OK              = 0,
-    ERR_INV_PARAM       = 10,
-    ERR_INIT_FAILED     = 20
-} Type_Err;
-
-
-struct Base_GPIO
-{
-    GPIO_TypeDef *basePort;
-    GPIO_InitTypeDef initData;
-};
 
 /* ---- Publicly visible Variables and Constants ----------------------- */
+extern void Util_LED_On(uint32_t led);
+
+extern void Util_LED_Off(uint32_t led);
+
+extern void Util_LED_Toggle(uint32_t led);
 
 /* ---- Publicly visible Functions ------------------------------------- */
 
 
-#endif /* __SYS_TYPES_H */
+#endif /* __util_led_H */

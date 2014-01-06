@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file    sys_types.h
+ * @file    sys_main.h
  * @author  Philippose Rajan
- * @date    24.11.2013
- * @brief   Custom Data types which need to be visible throughout the application
+ * @date    06.01.2014
+ * @brief   Main Initialisation routines for the base system comes here
  *
  * @see     The GNU Public License (GPL) Version 3
  *
@@ -25,29 +25,16 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __SYS_TYPES_H
-#define __SYS_TYPES_H
-
-#include "stm32f30x.h"
+#ifndef __sys_main_H
+#define __sys_main_H
 
 /* ---- Publicly visible Macros ---------------------------------------- */
-typedef enum Type_Err
-{
-    ERR_OK              = 0,
-    ERR_INV_PARAM       = 10,
-    ERR_INIT_FAILED     = 20
-} Type_Err;
-
-
-struct Base_GPIO
-{
-    GPIO_TypeDef *basePort;
-    GPIO_InitTypeDef initData;
-};
 
 /* ---- Publicly visible Variables and Constants ----------------------- */
 
 /* ---- Publicly visible Functions ------------------------------------- */
+extern void Sys_Init(void);
 
+extern void Sys_Board_Init(void);
 
-#endif /* __SYS_TYPES_H */
+#endif /* __sys_main_H */

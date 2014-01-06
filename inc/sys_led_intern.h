@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file    sys_types.h
+ * @file    sys_led_intern.h
  * @author  Philippose Rajan
- * @date    24.11.2013
- * @brief   Custom Data types which need to be visible throughout the application
+ * @date    06.01.2014
+ * @brief   Internal Data Structures for the Board LEDs
  *
  * @see     The GNU Public License (GPL) Version 3
  *
@@ -25,29 +25,28 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef __SYS_TYPES_H
-#define __SYS_TYPES_H
+#ifndef __sys_led_intern_H
+#define __sys_led_intern_H
 
-#include "stm32f30x.h"
+#include "globals.h"
 
 /* ---- Publicly visible Macros ---------------------------------------- */
-typedef enum Type_Err
-{
-    ERR_OK              = 0,
-    ERR_INV_PARAM       = 10,
-    ERR_INIT_FAILED     = 20
-} Type_Err;
-
-
-struct Base_GPIO
-{
-    GPIO_TypeDef *basePort;
-    GPIO_InitTypeDef initData;
-};
 
 /* ---- Publicly visible Variables and Constants ----------------------- */
+struct Sys_LED
+{
+    struct Base_GPIO pin;
+    bool activeHigh;
+};
+
+struct Sys_LED_Cfg
+{
+    const struct Sys_LED *LEDs;
+    uint8_t numLEDs;
+};
 
 /* ---- Publicly visible Functions ------------------------------------- */
 
+extern int32_t Sys_LED_Init(const struct Sys_LED_Cfg *brdSetup);
 
-#endif /* __SYS_TYPES_H */
+#endif /* __sys_led_intern_H */

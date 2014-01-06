@@ -59,8 +59,6 @@
 /* Exported define -----------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
-void Set_System(void);
-
 void Enter_LowPowerMode(void);
 void Leave_LowPowerMode(void);
 
