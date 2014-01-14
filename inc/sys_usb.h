@@ -35,6 +35,8 @@ extern __IO uint8_t recieveBuffer[VIRTUAL_COM_PORT_DATA_SIZE];
 extern __IO  uint32_t receiveLength ;
 
 /* ---- Publicly visible Functions ------------------------------------- */
+extern void Sys_USB_Init(void);
+
 extern void Set_Packet_Sent(uint8_t state);
 
 extern bool Packet_Sent(void);

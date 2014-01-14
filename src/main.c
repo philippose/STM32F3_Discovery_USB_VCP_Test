@@ -45,7 +45,7 @@ __IO uint8_t userButtonState;
 
 
 /* ---- Parameters for the Initialisation Task ------------------------------ */
-#define STACK_SUBSYS_INIT       (100)
+#define STACK_SUBSYS_INIT       (200)
 #define PRIORITY_SUBSYS_INIT    (tskIDLE_PRIORITY + configMAX_PRIORITIES - 1)
 portTASK_FUNCTION_PROTO(taskSubSysInit, pvParameters);
 xTaskHandle hndSubSysInit;

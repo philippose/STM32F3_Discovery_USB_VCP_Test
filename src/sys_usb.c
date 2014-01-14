@@ -28,13 +28,17 @@
 /* ---- Includes --------------------------------------------------------- */
 #include "globals.h"
 #include "usb_lib.h"
+#include "usb_prop.h"
 #include "usb_desc.h"
+#include "usb_pwr.h"
 
 /* ---- Externally visible Variables ------------------------------------- */
 __IO uint8_t recieveBuffer[VIRTUAL_COM_PORT_DATA_SIZE];
 __IO uint32_t receiveLength;
 
 /* ---- Externally visible Functions ------------------------------------- */
+void Sys_USB_Init(void);
+
 void Set_Packet_Sent(uint8_t state);
 
 bool Packet_Sent(void);
@@ -54,6 +58,68 @@ static uint8_t packetReceived = 1;
 /* ---- Local Functions -------------------------------------------------- */
 
 /* ----------------------------------------------------------------------- */
+
+void Sys_USB_Init(void)
+{
+    /* ---- Setup the GPIO Pins for the USB Subsystem -------------------- */
+    {
+        GPIO_InitTypeDef GPIO_InitStructure;
+
+        /*Set PA11,12 as IN - USB_DM,DP*/
+        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+        GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+        /*SET PA11,12 for USB: USB_DM,DP*/
+        GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_14);
+        GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_14);
+    }
+    /* ------------------------------------------------------------------- */
+
+    /* ---- Setup the Interrupt Line used by the USB API ----------------- */
+    {
+        EXTI_InitTypeDef EXTI_InitStructure;
+
+        /* Configure the EXTI line 18 connected internally to the USB IP */
+        EXTI_ClearITPendingBit(EXTI_Line18);
+        EXTI_InitStructure.EXTI_Line = EXTI_Line18;
+        EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+        EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+        EXTI_Init(&EXTI_InitStructure);
+    }
+    /* ------------------------------------------------------------------- */
+
+    /* ---- Setup the USB Clock to 48 MHz -------------------------------- */
+    /* Select USBCLK source */
+    RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+
+    /* Enable the USB clock */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+    /* ------------------------------------------------------------------- */
+
+    /* ---- Setup the Interrupt Priorities for the USB Subsystem --------- */
+    {
+        NVIC_InitTypeDef NVIC_InitStructure;
+
+        /* Enable the USB interrupt */
+        NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+        NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = SYS_IRQ_PRIO_LOW;
+        NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+        NVIC_Init(&NVIC_InitStructure);
+
+        /* Enable the USB Wake-up interrupt */
+        NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+        NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = SYS_IRQ_PRIO_HIGH;
+        NVIC_Init(&NVIC_InitStructure);
+    }
+    /* ------------------------------------------------------------------- */
+}
+
+
 
 void Set_Packet_Sent(uint8_t state)
 {

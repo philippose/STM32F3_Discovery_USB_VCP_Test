@@ -177,9 +177,11 @@ void Sys_Board_Init(void)
     STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
 
     /* Setup the USB Subsystem */
-    USB_Pins_Config();
-    Set_USBClock();
-    USB_Interrupts_Config();
+    //USB_Pins_Config();
+    //Set_USBClock();
+    //USB_Interrupts_Config();
+    //USB_Init();
+    Sys_USB_Init();
     USB_Init();
 }
 

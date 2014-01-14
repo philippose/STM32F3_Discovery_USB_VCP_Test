@@ -48,12 +48,12 @@
 #define SYS_IRQ_PRIO_LOW                      12
 /* -------------------------------------------------------------------------- */
 
-#ifdef STM32F30X
-  #define USB_DISCONNECT                      GPIOE
-  #define USB_DISCONNECT_PIN                  GPIO_Pin_14
-
-  #define RCC_AHBPeriph_GPIO_DISCONNECT       RCC_AHBPeriph_GPIOE
-#endif /* STM32F30X */
+//#ifdef STM32F30X
+//  #define USB_DISCONNECT                      GPIOE
+//  #define USB_DISCONNECT_PIN                  GPIO_Pin_14
+//
+//  #define RCC_AHBPeriph_GPIO_DISCONNECT       RCC_AHBPeriph_GPIOE
+//#endif /* STM32F30X */
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
@@ -65,9 +65,9 @@ void Leave_LowPowerMode(void);
 void NVIC_Configuration(void);
 
 
-void Set_USBClock(void);
-void USB_Pins_Config(void);
-void USB_Interrupts_Config(void);
+//void Set_USBClock(void);
+//void USB_Pins_Config(void);
+//void USB_Interrupts_Config(void);
 void USB_Cable_Config (FunctionalState NewState);
 
 void Get_SerialNum(void);
