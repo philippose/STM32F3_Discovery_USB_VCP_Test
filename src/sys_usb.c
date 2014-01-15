@@ -63,7 +63,7 @@ void Sys_USB_Init(void)
 {
     /* ---- Setup the GPIO Pins for the USB Subsystem -------------------- */
     {
-        GPIO_InitTypeDef GPIO_InitStructure;
+        static GPIO_InitTypeDef GPIO_InitStructure;
 
         /*Set PA11,12 as IN - USB_DM,DP*/
         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
@@ -81,7 +81,7 @@ void Sys_USB_Init(void)
 
     /* ---- Setup the Interrupt Line used by the USB API ----------------- */
     {
-        EXTI_InitTypeDef EXTI_InitStructure;
+        static EXTI_InitTypeDef EXTI_InitStructure;
 
         /* Configure the EXTI line 18 connected internally to the USB IP */
         EXTI_ClearITPendingBit(EXTI_Line18);
@@ -102,7 +102,7 @@ void Sys_USB_Init(void)
 
     /* ---- Setup the Interrupt Priorities for the USB Subsystem --------- */
     {
-        NVIC_InitTypeDef NVIC_InitStructure;
+        static NVIC_InitTypeDef NVIC_InitStructure;
 
         /* Enable the USB interrupt */
         NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
@@ -117,6 +117,8 @@ void Sys_USB_Init(void)
         NVIC_Init(&NVIC_InitStructure);
     }
     /* ------------------------------------------------------------------- */
+
+    USB_Init();
 }
 
 
